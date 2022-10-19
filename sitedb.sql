@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Окт 19 2022 г., 09:44
+-- Время создания: Окт 19 2022 г., 12:39
 -- Версия сервера: 10.4.24-MariaDB
 -- Версия PHP: 8.1.6
 
@@ -27,12 +27,10 @@ DELIMITER $$
 --
 -- Процедуры
 --
-DROP PROCEDURE IF EXISTS `section_sort_max`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `section_sort_max` ()   BEGIN  
    SELECT * FROM sections ORDER BY sections.goods_amount DESC;
 END$$
 
-DROP PROCEDURE IF EXISTS `section_with_empty`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `section_with_empty` ()   BEGIN  
    SELECT * FROM sections WHERE (sections.goods_amount IS NOT NULL) OR (sections.goods_amount > 0);
 END$$
@@ -42,10 +40,21 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
+-- Структура таблицы `dop_picture_list`
+--
+
+CREATE TABLE `dop_picture_list` (
+  `id` int(11) NOT NULL,
+  `product_id` int(11) DEFAULT NULL,
+  `image_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Структура таблицы `goods`
 --
 
-DROP TABLE IF EXISTS `goods`;
 CREATE TABLE `goods` (
   `id` int(11) NOT NULL,
   `header` text DEFAULT NULL,
@@ -64,7 +73,6 @@ CREATE TABLE `goods` (
 -- Структура таблицы `image`
 --
 
-DROP TABLE IF EXISTS `image`;
 CREATE TABLE `image` (
   `id` int(11) NOT NULL,
   `path` text DEFAULT NULL
@@ -73,20 +81,37 @@ CREATE TABLE `image` (
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `sections`
+-- Структура таблицы `section`
 --
 
-DROP TABLE IF EXISTS `sections`;
-CREATE TABLE `sections` (
+CREATE TABLE `section` (
   `id` int(11) NOT NULL,
   `name` text DEFAULT NULL,
   `details` text DEFAULT NULL,
   `goods_amount` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `sections_list`
+--
+
+CREATE TABLE `sections_list` (
+  `id` int(11) NOT NULL,
+  `product_id` int(11) DEFAULT NULL,
+  `section_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 --
 -- Индексы сохранённых таблиц
 --
+
+--
+-- Индексы таблицы `dop_picture_list`
+--
+ALTER TABLE `dop_picture_list`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Индексы таблицы `goods`
@@ -101,9 +126,15 @@ ALTER TABLE `image`
   ADD PRIMARY KEY (`id`);
 
 --
--- Индексы таблицы `sections`
+-- Индексы таблицы `section`
 --
-ALTER TABLE `sections`
+ALTER TABLE `section`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Индексы таблицы `sections_list`
+--
+ALTER TABLE `sections_list`
   ADD PRIMARY KEY (`id`);
 COMMIT;
 
