@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Окт 19 2022 г., 12:39
+-- Время создания: Окт 19 2022 г., 17:39
 -- Версия сервера: 10.4.24-MariaDB
 -- Версия PHP: 8.1.6
 
@@ -61,7 +61,7 @@ CREATE TABLE `goods` (
   `picture_id` int(11) DEFAULT NULL,
   `dop_picture_id` int(11) DEFAULT NULL,
   `sections_id` int(11) DEFAULT NULL,
-  `price` int(11) DEFAULT NULL,
+  `price` float DEFAULT NULL,
   `price_without_sale` int(11) DEFAULT NULL,
   `price_with_promo` int(11) DEFAULT NULL,
   `description` text DEFAULT NULL
