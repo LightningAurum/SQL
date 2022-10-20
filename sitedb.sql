@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Окт 20 2022 г., 06:58
+-- Время создания: Окт 20 2022 г., 07:15
 -- Версия сервера: 10.4.24-MariaDB
 -- Версия PHP: 8.1.6
 
@@ -46,7 +46,7 @@ END$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `show_goods_on_one_page` (IN `page_num` INT)   BEGIN
    DECLARE num1 INT;
    SET num1 = page_num * 12;
-   SELECT * FROM goods LIMIT num1, 12;
+   SELECT * FROM goods WHERE goods.product_activity = true LIMIT num1, 12;
 END$$
 
 DELIMITER ;
@@ -168,48 +168,48 @@ CREATE TABLE `goods` (
 --
 
 INSERT INTO `goods` (`id`, `header`, `picture_id`, `dop_picture_id`, `main_section_id`, `sections_id`, `price`, `price_without_sale`, `price_with_promo`, `description`, `product_activity`) VALUES
-(1, '[value-2]', 3, 3, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(2, '[value-2]', 4, 4, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(3, '[value-2]', 6, 6, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(4, '[value-2]', 1, 1, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(5, '[value-2]', 9, 2, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(6, '[value-2]', 80, 4, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(7, '[value-2]', 30, 6, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(8, '[value-2]', 3, 3, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(9, '[value-2]', 2, 6, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(10, '[value-2]', 4, 9, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(11, '[value-2]', 9, 6, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(12, '[value-2]', 12, 12, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(13, '[value-2]', 17, 23, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(14, '[value-2]', 27, 45, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(15, '[value-2]', 49, 46, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(16, '[value-2]', 102, 12, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(17, '[value-2]', 123, 120, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(18, '[value-2]', 23, 124, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(19, '[value-2]', 2023, 122, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(20, '[value-2]', 103, 212, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(21, '[value-2]', 33, 78, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(22, '[value-2]', 13, 90, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(23, '[value-2]', 38, 23, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(24, '[value-2]', 20, 14, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(25, '[value-2]', 31, 36, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(26, '[value-2]', 10, 768, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(27, '[value-2]', 76, 90, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(28, '[value-2]', 77, 39, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(29, '[value-2]', 73, 51, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(30, '[value-2]', 79, 31, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(31, '[value-2]', 87, 73, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(32, '[value-2]', 82, 94, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(33, '[value-2]', 80, 27, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(34, '[value-2]', 90, 41, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(35, '[value-2]', 95, 84, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(36, '[value-2]', 923, 941, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(37, '[value-2]', 293, 412, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(38, '[value-2]', 92, 321, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(39, '[value-2]', 95, 72, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(40, '[value-2]', 92, 99, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(41, '[value-2]', 63, 241, NULL, 5, 6, 7, 8, '[value-9]', NULL),
-(42, '[value-2]', 163, 36, NULL, 5, 6, 7, 8, '[value-9]', NULL);
+(1, '[value-2]', 3, 3, 3, 5, 6, 7, 8, '[value-10]', 1),
+(2, '[value-2]', 4, 4, 3, 5, 6, 7, 8, '[value-10]', 1),
+(3, '[value-2]', 6, 6, 3, 5, 6, 7, 8, '[value-10]', 0),
+(4, '[value-2]', 1, 1, 3, 5, 6, 7, 8, '[value-10]', 1),
+(5, '[value-2]', 9, 2, 3, 5, 6, 7, 8, '[value-10]', 1),
+(6, '[value-2]', 80, 4, 3, 5, 6, 7, 8, '[value-10]', 1),
+(7, '[value-2]', 30, 6, 3, 5, 6, 7, 8, '[value-10]', 0),
+(8, '[value-2]', 3, 3, 3, 5, 6, 7, 8, '[value-10]', 1),
+(9, '[value-2]', 2, 6, 3, 5, 6, 7, 8, '[value-10]', 1),
+(10, '[value-2]', 4, 9, 3, 5, 6, 7, 8, '[value-10]', 1),
+(11, '[value-2]', 9, 6, 3, 5, 6, 7, 8, '[value-10]', 1),
+(12, '[value-2]', 12, 12, 3, 5, 6, 7, 8, '[value-10]', 1),
+(13, '[value-2]', 17, 23, 3, 5, 6, 7, 8, '[value-10]', 1),
+(14, '[value-2]', 27, 45, 3, 5, 6, 7, 8, '[value-10]', 1),
+(15, '[value-2]', 49, 46, 3, 5, 6, 7, 8, '[value-10]', 1),
+(16, '[value-2]', 102, 12, 3, 5, 6, 7, 8, '[value-10]', 0),
+(17, '[value-2]', 123, 120, 3, 5, 6, 7, 8, '[value-10]', 1),
+(18, '[value-2]', 23, 124, 5, 3, 6, 7, 8, '[value-10]', 1),
+(19, '[value-2]', 2023, 3, 122, 5, 6, 7, 8, '[value-10]', 1),
+(20, '[value-2]', 103, 212, 3, 5, 6, 7, 8, '[value-10]', 1),
+(21, '[value-2]', 33, 78, 3, 5, 6, 7, 8, '[value-10]', 1),
+(22, '[value-2]', 13, 90, 3, 5, 6, 7, 8, '[value-10]', 0),
+(23, '[value-2]', 38, 23, 3, 5, 6, 7, 8, '[value-10]', 1),
+(24, '[value-2]', 20, 14, 3, 5, 6, 7, 8, '[value-10]', 1),
+(25, '[value-2]', 31, 36, 3, 5, 6, 7, 8, '[value-10]', 1),
+(26, '[value-2]', 10, 768, 3, 5, 6, 7, 8, '[value-10]', 1),
+(27, '[value-2]', 76, 90, 3, 5, 6, 7, 8, '[value-10]', 1),
+(28, '[value-2]', 77, 39, 3, 5, 6, 7, 8, '[value-10]', 0),
+(29, '[value-2]', 73, 51, 3, 5, 6, 7, 8, '[value-10]', 1),
+(30, '[value-2]', 79, 31, 3, 5, 6, 7, 8, '[value-10]', 1),
+(31, '[value-2]', 87, 73, 3, 5, 6, 7, 8, '[value-10]', 1),
+(32, '[value-2]', 82, 94, 3, 5, 6, 7, 8, '[value-10]', 1),
+(33, '[value-2]', 80, 27, 3, 5, 6, 7, 8, '[value-10]', 1),
+(34, '[value-2]', 90, 41, 3, 5, 6, 7, 8, '[value-10]', 1),
+(35, '[value-2]', 95, 84, 3, 5, 6, 7, 8, '[value-10]', 1),
+(36, '[value-2]', 923, 941, 3, 5, 6, 7, 8, '[value-10]', 0),
+(37, '[value-2]', 293, 412, 3, 5, 6, 7, 8, '[value-10]', 0),
+(38, '[value-2]', 92, 321, 3, 5, 6, 7, 8, '[value-10]', 1),
+(39, '[value-2]', 95, 72, 3, 5, 6, 7, 8, '[value-10]', 1),
+(40, '[value-2]', 92, 99, 3, 5, 6, 7, 8, '[value-10]', 1),
+(41, '[value-2]', 63, 241, 3, 5, 6, 7, 8, '[value-10]', 0),
+(42, '[value-2]', 163, 36, 3, 5, 6, 7, 8, '[value-10]', 1);
 
 -- --------------------------------------------------------
 
