@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Окт 20 2022 г., 07:15
+-- Время создания: Окт 20 2022 г., 08:08
 -- Версия сервера: 10.4.24-MariaDB
 -- Версия PHP: 8.1.6
 
@@ -27,6 +27,13 @@ DELIMITER $$
 --
 -- Процедуры
 --
+CREATE DEFINER=`root`@`localhost` PROCEDURE `amount_of_goods_update` (IN `section_id` INT)   BEGIN
+   DECLARE num1 INT;
+   SET num1 = (SELECT COUNT(*) FROM sections_list WHERE sections_list.section_id = section_id);
+   UPDATE section SET section.goods_amount = num1 WHERE section.id = section_id;
+   SELECT num1 AS amount;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_all_images` (IN `image_id` INT)   BEGIN
    SELECT * FROM dop_picture_list WHERE product_id = image_id;
 END$$
@@ -293,16 +300,16 @@ CREATE TABLE `section` (
 --
 
 INSERT INTO `section` (`id`, `name`, `details`, `goods_amount`) VALUES
-(1, '[value-2]', '[value-3]', 4),
-(2, '[value-2]', '[value-3]', 2),
+(1, '[value-2]', '[value-3]', 5),
+(2, '[value-2]', '[value-3]', 4),
 (3, '[value-2]', '[value-3]', 3),
-(4, '[value-2]', '[value-3]', 12),
-(5, '[value-2]', '[value-3]', 16),
-(6, '[value-2]', '[value-3]', 8),
-(7, '[value-2]', '[value-3]', 20),
-(8, '[value-2]', '[value-3]', 14),
-(9, '[value-2]', '[value-3]', 12),
-(10, '[value-2]', '[value-3]', 15),
+(4, '[value-2]', '[value-3]', 2),
+(5, '[value-2]', '[value-3]', 1),
+(6, '[value-2]', '[value-3]', 3),
+(7, '[value-2]', '[value-3]', 2),
+(8, '[value-2]', '[value-3]', 2),
+(9, '[value-2]', '[value-3]', 1),
+(10, '[value-2]', '[value-3]', 2),
 (11, '[value-2]', '[value-3]', 23),
 (12, '[value-2]', '[value-3]', 4),
 (13, '[value-2]', '[value-3]', 6),
