@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Окт 20 2022 г., 08:08
+-- Время создания: Окт 27 2022 г., 06:16
 -- Версия сервера: 10.4.24-MariaDB
 -- Версия PHP: 8.1.6
 
@@ -29,17 +29,51 @@ DELIMITER $$
 --
 CREATE DEFINER=`root`@`localhost` PROCEDURE `amount_of_goods_update` (IN `section_id` INT)   BEGIN
    DECLARE num1 INT;
-   SET num1 = (SELECT COUNT(*) FROM sections_list WHERE sections_list.section_id = section_id);
+   SET num1 = (SELECT COUNT(*) FROM goods INNER JOIN sections_list ON sections_list.product_id = goods.id WHERE (goods.main_section_id = section_id) OR (sections_list.section_id = section_id) ORDER BY goods.id);
+   SELECT * FROM section WHERE section.id = section_id;
    UPDATE section SET section.goods_amount = num1 WHERE section.id = section_id;
-   SELECT num1 AS amount;
+   SELECT * FROM section WHERE section.id = section_id;
+   SELECT num1;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_all_images` (IN `image_id` INT)   BEGIN
-   SELECT * FROM dop_picture_list WHERE product_id = image_id;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `amount_of_goods_updateTEST` (IN `s` INT)   BEGIN
+   DECLARE num1 INT;
+   SET num1 = (SELECT COUNT(*) FROM goods INNER JOIN sections_list ON sections_list.product_id = goods.id WHERE (goods.main_section_id = section_id) OR (sections_list.section_id = section_id) ORDER BY goods.id);
+   UPDATE section SET section.goods_amount = num1 WHERE section.id = section_id;
+   SELECT num1;
+   SELECT * FROM sections_list WHERE sections_list.section_id = section_id ORDER BY sections_list.product_id;
+   SELECT * FROM goods WHERE goods.main_section_id = section_id ORDER BY goods.id;
+   SELECT goods.id, sections_list.product_id, sections_list.section_id, goods.main_section_id FROM goods RIGHT JOIN sections_list ON sections_list.product_id = goods.id WHERE (goods.main_section_id = section_id) OR (sections_list.section_id = section_id) ORDER BY sections_list.product_id, goods.id;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_all_sections` (IN `section_id` INT)   BEGIN
-   SELECT * FROM sections_list WHERE product_id = section_id;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getAllSections` ()   BEGIN
+	SELECT * FROM section;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_product_info` (IN `product_id` INT)   BEGIN
+	SELECT * FROM goods WHERE goods.id = product_id;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `goodsForSection` (IN `page_num` INT, IN `section_id` INT)   BEGIN
+	DECLARE num1 INT;
+	SET num1 = page_num * 12;
+	SELECT goods.id, goods.header, image.path, image.alt, goods.description FROM goods RIGHT JOIN sections_list ON sections_list.product_id = goods.id INNER JOIN image ON goods.picture_id = image.id WHERE (goods.main_section_id = section_id OR sections_list.section_id = section_id) AND goods.product_activity = true ORDER BY goods.id LIMIT num1, 12;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `productAllImages` (IN `good_id` INT)   BEGIN
+	SELECT dop_picture_list.id, dop_picture_list.product_id, image.path, image.alt FROM dop_picture_list LEFT JOIN image ON dop_picture_list.image_id = image.id WHERE dop_picture_list.product_id = good_id;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `productAllSections` (IN `good_id` INT)   BEGIN
+	SELECT sections_list.id, sections_list.product_id, section.name FROM sections_list LEFT JOIN section ON sections_list.section_id = section.id WHERE sections_list.product_id = good_id;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `productMainImage` (IN `good_id` INT)   BEGIN
+	SELECT goods.id, image.path, image.alt FROM goods LEFT JOIN image ON goods.picture_id = image.id WHERE goods.id = good_id;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `productMainSection` (IN `good_id` INT)   BEGIN
+	SELECT goods.id, section.name FROM goods LEFT JOIN section ON goods.main_section_id = section.id WHERE goods.id = good_id;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `section_sort_max` ()   BEGIN  
@@ -54,6 +88,15 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `show_goods_on_one_page` (IN `page_n
    DECLARE num1 INT;
    SET num1 = page_num * 12;
    SELECT * FROM goods WHERE goods.product_activity = true LIMIT num1, 12;
+END$$
+
+--
+-- Функции
+--
+CREATE DEFINER=`root`@`localhost` FUNCTION `getProductMainImage` (`product_id` INT) RETURNS VARCHAR(30) CHARSET utf8mb4 DETERMINISTIC BEGIN
+	DECLARE result VARCHAR(30);
+	SET result = (SELECT image.path FROM goods LEFT JOIN image ON goods.picture_id = image.id WHERE goods.id = product_id);
+	RETURN (result); 
 END$$
 
 DELIMITER ;
@@ -78,8 +121,8 @@ INSERT INTO `dop_picture_list` (`id`, `product_id`, `image_id`) VALUES
 (1, 1, 1),
 (2, 1, 2),
 (3, 1, 3),
-(4, 1, 4),
-(5, 1, 5),
+(4, 2, 4),
+(5, 2, 5),
 (6, 2, 6),
 (7, 2, 7),
 (8, 2, 8),
@@ -175,10 +218,10 @@ CREATE TABLE `goods` (
 --
 
 INSERT INTO `goods` (`id`, `header`, `picture_id`, `dop_picture_id`, `main_section_id`, `sections_id`, `price`, `price_without_sale`, `price_with_promo`, `description`, `product_activity`) VALUES
-(1, '[value-2]', 3, 3, 3, 5, 6, 7, 8, '[value-10]', 1),
-(2, '[value-2]', 4, 4, 3, 5, 6, 7, 8, '[value-10]', 1),
+(1, 'Рубашка Medicine', 1, 3, 1, 2, 2499, 2699, 2227, 'Рубашка', 1),
+(2, '[value-2]', 4, 4, 3, 5, 6, 7, 8, 'Рубашка', 1),
 (3, '[value-2]', 6, 6, 3, 5, 6, 7, 8, '[value-10]', 0),
-(4, '[value-2]', 1, 1, 3, 5, 6, 7, 8, '[value-10]', 1),
+(4, 'Рубашка', 1, 1, 3, 5, 6, 7, 8, '[value-10]', 1),
 (5, '[value-2]', 9, 2, 3, 5, 6, 7, 8, '[value-10]', 1),
 (6, '[value-2]', 80, 4, 3, 5, 6, 7, 8, '[value-10]', 1),
 (7, '[value-2]', 30, 6, 3, 5, 6, 7, 8, '[value-10]', 0),
@@ -191,7 +234,7 @@ INSERT INTO `goods` (`id`, `header`, `picture_id`, `dop_picture_id`, `main_secti
 (14, '[value-2]', 27, 45, 3, 5, 6, 7, 8, '[value-10]', 1),
 (15, '[value-2]', 49, 46, 3, 5, 6, 7, 8, '[value-10]', 1),
 (16, '[value-2]', 102, 12, 3, 5, 6, 7, 8, '[value-10]', 0),
-(17, '[value-2]', 123, 120, 3, 5, 6, 7, 8, '[value-10]', 1),
+(17, 'Рубашка', 2, 120, 3, 5, 6, 7, 8, '[value-10]', 1),
 (18, '[value-2]', 23, 124, 5, 3, 6, 7, 8, '[value-10]', 1),
 (19, '[value-2]', 2023, 3, 122, 5, 6, 7, 8, '[value-10]', 1),
 (20, '[value-2]', 103, 212, 3, 5, 6, 7, 8, '[value-10]', 1),
@@ -235,15 +278,15 @@ CREATE TABLE `image` (
 --
 
 INSERT INTO `image` (`id`, `path`, `alt`) VALUES
-(1, '[value-2]', '[value-3]'),
-(2, '[value-2]', '[value-3]'),
-(3, '[value-2]', '[value-3]'),
-(4, '[value-2]', '[value-3]'),
-(5, '[value-2]', '[value-3]'),
-(6, '[value-2]', '[value-3]'),
-(7, '[value-2]', '[value-3]'),
-(8, '[value-2]', '[value-3]'),
-(9, '[value-2]', '[value-3]'),
+(1, '../pictures/1.png', 'Рубашка'),
+(2, '../pictures/2.png', 'Рубашка'),
+(3, '../pictures/3.png', 'Рубашка'),
+(4, '[value-2]', 'Рубашка'),
+(5, '[value-2]', 'image_id=5'),
+(6, '[value-2]', 'Рубашка'),
+(7, '[value-2]', 'image_id=6'),
+(8, '[value-2]', 'image_id=7'),
+(9, '[value-2]', 'image_id=8'),
 (10, '[value-2]', '[value-3]'),
 (11, '[value-2]', '[value-3]'),
 (12, '[value-2]', '[value-3]'),
@@ -300,11 +343,11 @@ CREATE TABLE `section` (
 --
 
 INSERT INTO `section` (`id`, `name`, `details`, `goods_amount`) VALUES
-(1, '[value-2]', '[value-3]', 5),
-(2, '[value-2]', '[value-3]', 4),
-(3, '[value-2]', '[value-3]', 3),
+(1, 'Рубашки Medicine', 'Большой выбор рубашек из каталога Medicine', 7),
+(2, 'Все модели Medicine', 'Большой выбор товаров из каталога Medicine', 4),
+(3, 'Рубашки', 'Рубашка - тканевая одежда для верхней части тела (от шеи до талии)', 42),
 (4, '[value-2]', '[value-3]', 2),
-(5, '[value-2]', '[value-3]', 1),
+(5, '[value-2]', '[value-3]', 2),
 (6, '[value-2]', '[value-3]', 3),
 (7, '[value-2]', '[value-3]', 2),
 (8, '[value-2]', '[value-3]', 2),
@@ -345,9 +388,7 @@ INSERT INTO `section` (`id`, `name`, `details`, `goods_amount`) VALUES
 (43, '[value-2]', '[value-3]', 31),
 (44, '[value-2]', '[value-3]', 36),
 (45, '[value-2]', '[value-3]', 22),
-(46, '[value-2]', '[value-3]', 41),
-(47, '', '', 0),
-(48, NULL, NULL, NULL);
+(46, '[value-2]', '[value-3]', 41);
 
 -- --------------------------------------------------------
 
@@ -369,8 +410,8 @@ INSERT INTO `sections_list` (`id`, `product_id`, `section_id`) VALUES
 (1, 1, 1),
 (2, 1, 2),
 (3, 1, 3),
-(4, 1, 4),
-(5, 1, 5),
+(4, 2, 4),
+(5, 2, 5),
 (6, 2, 6),
 (7, 2, 7),
 (8, 2, 8),
